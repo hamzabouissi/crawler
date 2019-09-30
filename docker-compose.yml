@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  workers:
+    build:
+      context: .
+      dockerfile: dockerfile
+    image: workers
+    volumes:
+      - .:/home/crawler
+    depends_on:
+      - redis
+    command: ./docker-entrypoint.sh
+  
+
+  redis:
+    #hostname: crawler_redis
+    image: redis
+    ports: 
+      - "6379:6379"
+    
