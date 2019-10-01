@@ -17,7 +17,7 @@ import pandas as pd
 #@app.task
 def generate_csv(data):
     df = pd.DataFrame(data)
-    df.to_csv("output.csv",mode='a',index=False)
+    df.to_csv("output.csv",index=False)
 
 
 hotels = defaultdict(list)

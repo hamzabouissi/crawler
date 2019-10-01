@@ -19,7 +19,8 @@ libcurl4-gnutls-dev \
 libssl-dev \
 curl \
 sudo \
-wget &&\
+wget \
+unzip &&\
 apt-get install -y \
 libzbar-dev \
 imagemagick \
@@ -36,13 +37,11 @@ pip3 install gevent && \
 #easy_install distribute && \
 rm -rf /var/lib/apt/lists/*
 
-COPY geckodriver /usr/local/bin/geckodriver
+RUN wget -qO- https://github.com/mozilla/geckodriver/releases/download/v0.25.0/geckodriver-v0.25.0-linux64.tar.gz | tar xvz -C /usr/local/bin
+
 
 WORKDIR /home/crawler
 
-#RUN chmod +x /home/crawler/geckodriver
-
-#RUN cp /home/crawler/geckodriver /usr/local/bin/geckodriver
 
 
 
