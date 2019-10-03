@@ -23,6 +23,7 @@ cycler==0.10.0
 decorator==4.4.0
 dnspython==1.16.0
 dramatiq==1.7.0
+EasyProcess==0.2.7
 eventlet==0.25.1
 fake-useragent==0.1.11
 gevent==1.4.0
@@ -50,8 +51,10 @@ pathtools==0.1.2
 pexpect==4.7.0
 pickleshare==0.7.5
 pika==1.1.0
+plotly==4.1.1
 prometheus-client==0.7.1
 prompt-toolkit==2.0.9
+psycopg2-binary==2.8.3
 ptyprocess==0.6.0
 pyasn1==0.4.7
 pyasn1-modules==0.2.6
@@ -67,6 +70,7 @@ pyquery==1.4.0
 PySocks==1.7.1
 python-dateutil==2.8.0
 pytz==2019.2
+PyVirtualDisplay==0.2.4
 PyYAML==5.1.2
 queuelib==1.5.0
 redis==3.3.8

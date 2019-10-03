@@ -1,13 +1,10 @@
-from pyvirtualdisplay import Display
-from selenium import webdriver
+def b():
+    global x
+    print(x)
 
-display = Display(visible=0, size=(800, 600))
-display.start()
 
-options = webdriver.FirefoxOptions()
-options.add_argument('-headless')
+def a():
+    x = 15
+    b()
 
-driver = webdriver.Firefox(options=options)
-driver.get('https://google.com')
-driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-print(driver.title)
+a()

@@ -8,4 +8,4 @@ pip install -r requirements.txt
 
 cd ..
 
-celery -A crawler worker --concurrency=100 --pool=gevent -l info
+celery -A crawler worker --concurrency=5 --pool=gevent -l info

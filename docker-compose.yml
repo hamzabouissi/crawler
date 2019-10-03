@@ -18,4 +18,17 @@ services:
     image: redis
     ports: 
       - "6379:6379"
-    
+  
+  postgres:
+    build:
+      context: ./db
+      dockerfile: dockerfile
+    volumes:
+      - ./db/data:/var/lib/postgresql/data:rw
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=crawlerdb
+      - POSTGRES_USER=testuser
+      - POSTGRES_PASSWORD=testuser
+    #command: ./docker-initdb.sh

@@ -9,23 +9,24 @@ from collections import defaultdict
 import csv,time
 from dataclasses import dataclass,field
 import random
-import pandas as pd
+import psycopg2
+from psycopg2.extras import DateRange
 
 
+conn = psycopg2.connect(user="testuser",password="testuser",database='crawlerdb',host='postgres')
+conn.set_session(autocommit=True)
+cur = conn.cursor()
+
+@app.task
+def save(data):
+    cur.executemany("insert into hotels values(%s,%s,%s,%s,%s,%s)",data)
 
 
-#@app.task
-def generate_csv(data):
-    df = pd.DataFrame(data)
-    df.to_csv("output.csv",index=False)
+def hotel_fetch(hotel):
 
-
-hotels = defaultdict(list)
-
-def hotel_fetch(hotel,start_date):
+    global start_date,final_date
     
-    global hotels
-
+    hotels = []
     name = hotel.find(class_='sr-hotel__name')
     price = hotel.find(class_='bui-price-display__value prco-inline-block-maker-helper')
     stars = hotel.find(class_='bk-icon-wrapper bk-icon-stars star_track')
@@ -33,45 +34,47 @@ def hotel_fetch(hotel,start_date):
 
     if price and stars :
         price = price.string.strip().split('\xa0')[1].replace(",","")
-        hotels["name"].append(name.string.strip())
-        hotels['day'].append(start_date)
-        hotels['price'].append(price)
-        hotels['stars'].append(stars.span.string)
-        hotels['distance'].append(distance[-2].string.strip().split(" ")[0])
+        hotels.append(name.string.strip())
+        hotels.append(start_date)
+        hotels.append(price)
+        hotels.append(stars.span.string[0])
+        hotels.append(distance[-2].string.strip().split(" ")[0])
+        hotels.append(final_date)
+    return hotels 
 
-    
-    
-def parser(driver,base_url,start_date,offset):
+def parser(driver,base_url,offset):
     page = driver.page_source
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     print(f'fetching page {offset} on date {start_date}')
     html = BeautifulSoup(page,"lxml")
     next_page = html.find("a",title='Next page')
     hotelist = html.find_all("div",attrs={"data-hotelid":True})
+    hotels = []
 
     for hotel in hotelist:
-        hotel_fetch(hotel,start_date)
+        data = hotel_fetch(hotel)
+        if data:hotels.append(data)
     
+    print(hotels)
+    save.delay(hotels)
 
     if next_page :
         offset+=30
         url = base_url + f"&row=30&offset={offset}"
         driver.get(url)
-        parser(driver,base_url,start_date,offset)
+        parser(driver,base_url,offset)
 
 
 @app.task
 def search(item):
-    global hotels
-
+    global start_date,final_date
     offset=0
     options = webdriver.FirefoxOptions()
     options.add_argument('-headless')
     driver = webdriver.Firefox(options=options)
-    url,start_date = item
+    url,start_date,final_date = item
     driver.get(url)
-    parser(driver,url,start_date,offset)
-    generate_csv(hotels)
+    parser(driver,url,offset)
     driver.quit()
 
         
