@@ -24,7 +24,7 @@ decorator==4.4.0
 dnspython==1.16.0
 dramatiq==1.7.0
 EasyProcess==0.2.7
-eventlet==0.25.1
+eventlet==0.31.0
 fake-useragent==0.1.11
 gevent==1.4.0
 greenlet==0.4.15
